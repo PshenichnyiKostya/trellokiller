@@ -2,8 +2,8 @@ const LocalStrategy = require("passport-local")
 const passportJwt = require("passport-jwt")
 const User = require('../models/User')
 const jwt = require("jsonwebtoken")
-const GoogleStrategy = require('passport-google-oauth20').Strategy
-const crypto = require("crypto")
+// const GoogleStrategy = require('passport-google-oauth20').Strategy
+// const crypto = require("crypto")
 
 const config = require('config')
 
@@ -55,25 +55,25 @@ module.exports = passport => {
         })
     )
 
-    passport.use(new GoogleStrategy({
-            clientID: config.get('google_client_id'),
-            clientSecret: config.get('google_secret_key'),
-            callbackURL: config.get('google_callback_url')
-        },
-        async function (accessToken, refreshToken, profile, done) {
-            const user = await User.findOne({email: profile._json.email})
-            if (user) {
-                return done(null, user);
-            } else {
-                const newUser = new User({
-                    email: profile._json.email,
-                    password: crypto.randomBytes(128).toString("base64"),
-                })
-                newUser.save()
-                return done(null, newUser)
-            }
-        }
-    ));
+    // passport.use(new GoogleStrategy({
+    //         clientID: config.get('google_client_id'),
+    //         clientSecret: config.get('google_secret_key'),
+    //         callbackURL: config.get('google_callback_url')
+    //     },
+    //     async function (accessToken, refreshToken, profile, done) {
+    //         const user = await User.findOne({email: profile._json.email})
+    //         if (user) {
+    //             return done(null, user);
+    //         } else {
+    //             const newUser = new User({
+    //                 email: profile._json.email,
+    //                 password: crypto.randomBytes(128).toString("base64"),
+    //             })
+    //             newUser.save()
+    //             return done(null, newUser)
+    //         }
+    //     }
+    // ));
     passport.serializeUser(function (user, done) {
         done(null, user);
     });

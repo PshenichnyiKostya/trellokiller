@@ -13,6 +13,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -24,7 +25,7 @@ module.exports = {
             })
 
             if (!board) {
-                return res.status(400).json({error: "You can not post comment here"})
+                return res.status(400).json({message: "You can not post comment here"})
             } else {
 
                 let referencesArray
@@ -32,10 +33,10 @@ module.exports = {
                     referencesArray = uniq(references.split(','))
                     for (let i = 0; i < referencesArray.length; i++) {
                         if (req.user._id.equals(referencesArray[i])) {
-                            return res.status(400).json({error: "You can not reference to yourself"})
+                            return res.status(400).json({message: "You can not reference to yourself"})
                         } else if (!board.admin.equals(referencesArray[i])
                             && !board.team.find(teammate => teammate.equals(referencesArray[i]))) {
-                            return res.status(400).json({error: "Incorrect references"})
+                            return res.status(400).json({message: "Incorrect references"})
                         }
                     }
                 }
@@ -46,7 +47,7 @@ module.exports = {
                     references: referencesArray ? referencesArray : [],
                     user: req.user._id
                 })
-                // TODO send to references
+
                 await comment.save()
                 const card = await Card.findById(cardId)
                 const options = {
@@ -80,6 +81,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -87,7 +89,7 @@ module.exports = {
                 if (data.deletedCount) {
                     return res.status(204).json({data: req.params.id})
                 } else {
-                    return res.status(400).json({errors: "You can not delete this comment"})
+                    return res.status(400).json({message: "You can not delete this comment"})
                 }
             })
         } catch (e) {

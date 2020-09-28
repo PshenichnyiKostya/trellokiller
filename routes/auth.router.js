@@ -19,8 +19,10 @@ authRouter.post('/login',
         check('password', 'Password must be at least 8 symbols').isLength({min: 8}),
     ], authController.login)
 
-authRouter.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}))
+// authRouter.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}))
 
-authRouter.get('/google/login', passport.authenticate('google',{session:false}), authController.googleLogin)
+// authRouter.get('/google/login', passport.authenticate('google',{session:false}), authController.googleLogin)
+
+authRouter.post('/googlelogin', authController.googleLogin)
 
 module.exports = authRouter

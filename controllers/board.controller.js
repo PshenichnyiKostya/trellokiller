@@ -35,6 +35,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
             await Board.findOne({_id: req.params.id, $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]})
@@ -42,7 +43,7 @@ module.exports = {
                     if (board) {
                         return res.status(200).json({data: board})
                     } else {
-                        return res.status(404).json({error: "Such board not found"})
+                        return res.status(404).json({message: "Such board not found"})
                     }
                 })
         } catch (e) {
@@ -55,13 +56,14 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
             const {name} = req.body
             const isBoard = await Board.findOne({name, admin: req.user._id})
             if (isBoard) {
-                return res.status(400).json({error: "Such board name already in use"})
+                return res.status(400).json({message: "Such board name already in use"})
             }
             const board = new Board({name, admin: user._id})
             await board.save()
@@ -76,7 +78,7 @@ module.exports = {
                 if (data.deletedCount) {
                     return res.status(204).json({data: req.params.id})
                 } else {
-                    return res.status(400).json({errors: "You can not delete this board"})
+                    return res.status(400).json({message: "You can not delete this board"})
                 }
             })
         } catch (e) {
@@ -89,6 +91,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -104,7 +107,7 @@ module.exports = {
                     usersIdArray = uniq(usersId.split(','))
                     for (let i = 0; i < usersIdArray.length; i++) {
                         if (req.user._id.equals(usersIdArray[i])) {
-                            return res.status(400).json({error: "You can not add yourself to board\\'s team"})
+                            return res.status(400).json({message: "You can not add yourself to board\\'s team"})
                         }
                     }
                     usersIdArray = differenceWith(usersIdArray, board.team.map(value => value.toString()), isEqual)

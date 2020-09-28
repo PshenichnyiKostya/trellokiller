@@ -9,6 +9,7 @@ const authRouter = require("./routes/auth.router")
 const boardRouter = require("./routes/board.router")
 const cardRouter = require("./routes/card.router")
 const commentRouter = require("./routes/comment.router")
+const cors = require("cors")
 
 configurePassport(passport)
 app.use(bodyParser.json({limit: '50mb'}))
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, PUT')
     next()
 })
+app.use(cors());
 app.use('/api/auth', authRouter)
 app.use('/api/board', boardRouter)
 app.use('/api/card', cardRouter)

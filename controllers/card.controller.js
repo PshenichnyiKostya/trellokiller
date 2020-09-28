@@ -9,6 +9,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -18,11 +19,11 @@ module.exports = {
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
-                return res.status(400).json({error: "Board not found for creating card"})
+                return res.status(400).json({message: "Board not found for creating card"})
             } else {
                 const isCard = await Card.findOne({name, board: board._id})
                 if (isCard) {
-                    return res.status(400).json({error: "Such card name already in use"})
+                    return res.status(400).json({message: "Such card name already in use"})
                 } else {
                     const card = new Card({name, board: board._id})
                     await card.save()
@@ -42,6 +43,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
             const {name} = req.query
@@ -51,7 +53,7 @@ module.exports = {
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
-                return res.status(400).json({error: "Board not found for getting cards"})
+                return res.status(400).json({message: "Board not found for getting cards"})
             } else {
                 const cards = await Card.find({
                     board: board._id,
@@ -70,6 +72,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -78,11 +81,11 @@ module.exports = {
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
-                return res.status(400).json({error: "Board not found for getting card"})
+                return res.status(400).json({message: "Board not found for getting card"})
             } else {
                 const card = await Card.findOne({_id: req.params.id, board: board._id}).populate('comments', '-card')
                 if (!card) {
-                    return res.status(400).json({error: "Card not found"})
+                    return res.status(400).json({message: "Card not found"})
                 } else {
                     return res.status(200).json({data: card})
                 }
@@ -97,6 +100,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -105,7 +109,7 @@ module.exports = {
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
-                return res.status(400).json({error: "Board not found for deleting card"})
+                return res.status(400).json({message: "Board not found for deleting card"})
             } else {
                 Card.deleteOne({_id: req.params.id}).then((data) => {
                     if (data.deletedCount) {
@@ -125,6 +129,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
 
@@ -134,7 +139,7 @@ module.exports = {
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
-                return res.status(400).json({error: "Board not found for deleting card"})
+                return res.status(400).json({message: "Board not found for deleting card"})
             } else {
                 Card.findOneAndUpdate({_id: req.params.id}, {name, status}).then((card) => {
                     return res.status(200).json({data: card._id})
