@@ -44,15 +44,19 @@ module.exports = {
                     errors: errors.array(),
                 })
             }
-
+            const {name} = req.query
+            const {boardId} = req.body
             const board = await Board.findOne({
-                _id: req.body.boardId,
+                _id: boardId,
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
                 return res.status(400).json({error: "Board not found for getting cards"})
             } else {
-                const cards = await Card.find({board: board._id})
+                const cards = await Card.find({
+                    board: board._id,
+                    name: name ? name : {$exists: true},
+                })
                 return res.status(200).json({data: cards})
             }
 

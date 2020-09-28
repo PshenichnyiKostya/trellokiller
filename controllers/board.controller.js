@@ -4,7 +4,24 @@ module.exports = {
 
     getBoards: async (req, res, next) => {
         try {
-            const boards = await Board.find({$or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]})
+            const {name} = req.query
+            const boards = await Board.find({
+                $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}],
+                name: name ? name : {"$exists": true}
+            })
+            return res.status(200).json({data: boards})
+        } catch (e) {
+            next(e)
+        }
+    },
+    getMyBoards: async (req, res, next) => {
+        try {
+            const {name} = req.query
+
+            const boards = await Board.find({
+                admin: req.user._id,
+                name: name ? name : {"$exists": true}
+            })
             return res.status(200).json({data: boards})
         } catch (e) {
             next(e)

@@ -28,7 +28,7 @@ app.use('/api/comment', commentRouter)
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({err: "Unexpected server error " + err})
 });
-
+// мои борды, имена карт, имена бордов
 const PORT = config.get('port') || 5000
 
 async function start() {

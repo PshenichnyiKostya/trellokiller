@@ -4,5 +4,15 @@
   "mongoUrl": "mongodb+srv://leverx:1234@trelloserver.dfdxq.mongodb.net/trellodb?retryWrites=true&w=majority",
   "google_client_id": "174139438358-8o793qf1o4pq5mre3glgr7pee3cg6s1t.apps.googleusercontent.com",
   "google_secret_key": "r_DrKiGJDQS5Mbe-BPdWRIAU",
-  "google_callback_url": "/api/auth/google/login"
+  "google_callback_url": "/api/auth/google/login",
+  "email_transport": {
+    "host": "smtp.gmail.com",
+    "auth": {
+      "user": "trellokiller1@gmail.com",
+      "pass": "trellokiller543d"
+    }
+  },
+  "email_config": {
+    "from": "TrelloKiller <trellokiller1@gmail.com>"
+  }
 }

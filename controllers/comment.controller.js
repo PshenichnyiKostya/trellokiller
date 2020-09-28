@@ -1,7 +1,10 @@
 const {validationResult} = require("express-validator")
 const Board = require("../models/Board")
 const Card = require("../models/Card")
+const {uniq} = require('lodash')
 const Comment = require("../models/Comment")
+const mailService = require('../services/mailService')
+const User = require('../models/User')
 
 module.exports = {
     createComment: async (req, res, next) => {
@@ -24,8 +27,9 @@ module.exports = {
                 return res.status(400).json({error: "You can not post comment here"})
             } else {
 
+                let referencesArray
                 if (references) {
-                    const referencesArray = references.split(',')
+                    referencesArray = uniq(references.split(','))
                     for (let i = 0; i < referencesArray.length; i++) {
                         if (req.user._id.equals(referencesArray[i])) {
                             return res.status(400).json({error: "You can not reference to yourself"})
@@ -39,11 +43,30 @@ module.exports = {
                 const comment = new Comment({
                     text,
                     card: cardId,
-                    references: references ? references.split(',') : [],
+                    references: referencesArray ? referencesArray : [],
                     user: req.user._id
                 })
+                // TODO send to references
                 await comment.save()
+                const card = await Card.findById(cardId)
+                const options = {
+                    board: board.name,
+                    user: req.user.email,
+                    card: card.name,
+                    text,
+                }
                 await Card.findByIdAndUpdate(cardId, {$push: {comments: comment._id}})
+                for (let i = 0; i < referencesArray.length; i++) {
+                    await User.findById(referencesArray[i]).then(async user => {
+                        await mailService.email.send({
+                            template: 'referencesComment',
+                            message: {
+                                to: user.email,
+                            },
+                            locals: options
+                        })
+                    })
+                }
                 return res.status(201).json({data: comment._id})
             }
 

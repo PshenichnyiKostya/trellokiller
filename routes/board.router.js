@@ -5,15 +5,17 @@ const boardController = require('../controllers/board.controller');
 const mongoose = require('mongoose')
 const boardRouter = Router()
 const User = require('../models/User')
-const Board=require('../models/Board')
+const Board = require('../models/Board')
 
 boardRouter.post('/',
     body('name')
         .exists({checkNull: true}).withMessage('Enter board name')
-        .isLength(5).withMessage('Min length is 5 symbols')
-    , passport.authenticate('jwt'), boardController.createBoard)
+        .isLength(5).withMessage('Min length is 5 symbols'),
+    passport.authenticate('jwt'), boardController.createBoard)
 
 boardRouter.get('/', passport.authenticate('jwt'), boardController.getBoards)
+
+boardRouter.get('/my', passport.authenticate('jwt'), boardController.getMyBoards)
 
 boardRouter.get('/:id',
     param('id')
