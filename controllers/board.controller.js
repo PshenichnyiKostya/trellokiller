@@ -1,5 +1,7 @@
 const {validationResult} = require("express-validator")
 const Board = require("../models/Board")
+const {uniq, differenceWith, isEqual} = require('lodash')
+
 module.exports = {
 
     getBoards: async (req, res, next) => {
@@ -90,29 +92,29 @@ module.exports = {
                 })
             }
 
-            const {name, userId} = req.body
-            if (userId == req.user._id) {
-                return res.status(400).json({error: "You can not add yourself in your team"})
-            }
+            const {name, usersId} = req.body
+
             const board = await Board.findOne({admin: req.user._id, _id: req.params.id})
+
             if (!board) {
                 return res.status(404).json({error: "Board not found"})
             } else {
-                if (board.team.indexOf(userId) === -1) {
-                    if (userId) {
-                        await board.updateOne({
-                            name,
-                            $push: {team: userId}
-                        })
-                    } else {
-                        await board.updateOne({
-                            name,
-                        })
+                let usersIdArray
+                if (usersId) {
+                    usersIdArray = uniq(usersId.split(','))
+                    for (let i = 0; i < usersIdArray.length; i++) {
+                        if (req.user._id.equals(usersIdArray[i])) {
+                            return res.status(400).json({error: "You can not add yourself to board\\'s team"})
+                        }
                     }
-                    return res.status(200).json({data: board._id})
-                } else {
-                    return res.status(400).json({error: "User already in your team"})
+                    usersIdArray = differenceWith(usersIdArray, board.team.map(value => value.toString()), isEqual)
                 }
+                await board.updateOne({
+                    name,
+                    $push: {team: {$each: usersIdArray}}
+                })
+                return res.status(200).json({data: board._id})
+
             }
         } catch (e) {
             next(e)

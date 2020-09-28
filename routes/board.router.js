@@ -38,11 +38,9 @@ boardRouter.patch('/:id',
         .custom(value => {
             return mongoose.Types.ObjectId.isValid(value)
         }).withMessage('Incorrect id param'),
-    body('userId')
+    body('usersId')
         .optional()
-        .custom(value => {
-            return User.findOne({_id: value}).exec()
-        }).withMessage('Incorrect userId value'),
+        .isString().withMessage('Incorrect usersId value'),
     body('name')
         .isLength(5).withMessage('Min length is 5 symbols')
     ,
