@@ -8,60 +8,6 @@ import {CreateBoardPage} from "./pages/CreateBoardPage";
 import {WelcomePage} from "./pages/WelcomePage";
 
 export const useRoutes = (isAuthenticated) => {
-    function UnauthorizedRoute({children}) {
-        return (
-            <Route exact
-                   render={() => {
-                       if (isAuthenticated) {
-                           return (<Redirect
-                               to={{
-                                   pathname: "/",
-                               }}
-                           />)
-                       } else {
-                           return children
-                       }
-                   }}
-            />
-        )
-    }
-
-    function AuthorizedRoute({children}) {
-        return (
-            <Route exact={true}
-                   render={() => {
-                       if (!isAuthenticated) {
-                           return (<Redirect
-                               to={{
-                                   pathname: "/",
-                               }}
-                           />)
-                       } else {
-                           return children
-                       }
-                   }}
-            />
-        )
-    }
-
-    // if (isAuthenticated) {
-    //     return (
-    //         <Switch>
-    //             <Route path='/boards' exact>
-    //                 <BoardsPage/>
-    //             </Route>
-    //             <Route path='/board/:id'>
-    //                 <BoardPage/>
-    //             </Route>
-    //             <Route path='/create/board' exact component={CreateBoardPage}/>
-    //             <Route path="/" exact>
-    //                 <WelcomePage/>
-    //             </Route>
-    //             <Redirect to='/'/>
-    //
-    //         </Switch>
-    //     )
-    // }
 
     return (
         <Switch>

@@ -28,7 +28,7 @@ module.exports = {
                 return res.status(400).json({message: "You can not post comment here"})
             } else {
 
-                let referencesArray
+                let referencesArray = []
                 if (references) {
                     referencesArray = uniq(references.split(','))
                     for (let i = 0; i < referencesArray.length; i++) {

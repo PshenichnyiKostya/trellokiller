@@ -15,7 +15,8 @@ export default function GoogleAuthComponent() {
     const responseSuccessGoogle = async (response) => {
         const data = await request('/api/auth/googlelogin', 'POST', {tokenId: response.tokenId})
         auth.login(data.token, data.userInfo.id)
-        auth?.isAuthenticated ? history.push('/') : history.push('/login')
+        // auth?.isAuthenticated ? history.push('/') : history.push('/login')
+        history.push('/')
     }
     const responseErrorGoogle = (response) => {
         console.log(response)

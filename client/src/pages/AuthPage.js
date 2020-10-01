@@ -56,7 +56,7 @@ export const AuthPage = () => {
         try {
             const data = await request('/api/auth/login', 'POST', {...form})
             auth.login(data.token, data.userInfo.id)
-            auth?.isAuthenticated ? history.push('/') : history.push('/login')
+            data.token ? history.push('/') : history.push('/login')
         } catch (e) {
 
         }

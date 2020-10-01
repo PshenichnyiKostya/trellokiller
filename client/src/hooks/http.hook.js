@@ -4,7 +4,7 @@ export const useHttp = () => {
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
-    const request = useCallback(async (url, method = 'GET', body = null, headers = {}) => {
+    const request = useCallback(async (url, method = 'GET', body = undefined, headers = {}) => {
         setLoading(true)
         try {
             if (body) {
@@ -13,6 +13,11 @@ export const useHttp = () => {
             }
             const response = await fetch(url, {method, body, headers})
             const data = await response.json()
+            // if (response.status === 401) {
+            //     throw new Error(
+            //         response.statusText
+            //     )
+            // }
             if (!response.ok) {
                 throw new Error(
                     data.message || "Something wrong("

@@ -20,19 +20,9 @@ cardRouter.post('/',
     passport.authenticate('jwt'), cardController.createCard)
 
 cardRouter.get('/',
-    body('boardId')
-        .exists().withMessage("Enter borderId value")
-        .custom(value => {
-            return Board.findOne({_id: value}).exec()
-        }).withMessage('Incorrect boardId value'),
     passport.authenticate('jwt'), cardController.getCards)
 
 cardRouter.get('/:id',
-    body('boardId')
-        .exists().withMessage("Enter boardId value")
-        .custom(value => {
-            return Board.findOne({_id: value}).exec()
-        }).withMessage('Incorrect boardId value'),
     param('id')
         .custom(value => {
             return Card.findOne({_id: value}).exec()

@@ -1,5 +1,6 @@
 const {validationResult} = require("express-validator")
 const Board = require("../models/Board")
+const User = require("../models/User")
 const {uniq, differenceWith, isEqual} = require('lodash')
 
 module.exports = {
@@ -7,9 +8,10 @@ module.exports = {
     getBoards: async (req, res, next) => {
         try {
             const {name} = req.query
+            const searchRegex = new RegExp(name)
             const boards = await Board.find({
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}],
-                name: name ? name : {"$exists": true}
+                name: searchRegex
             })
             return res.status(200).json({data: boards})
         } catch (e) {
@@ -19,10 +21,10 @@ module.exports = {
     getMyBoards: async (req, res, next) => {
         try {
             const {name} = req.query
-
+            const searchRegex = new RegExp(name)
             const boards = await Board.find({
                 admin: req.user._id,
-                name: name ? name : {"$exists": true}
+                name: searchRegex
             })
             return res.status(200).json({data: boards})
         } catch (e) {
@@ -39,6 +41,8 @@ module.exports = {
                 })
             }
             await Board.findOne({_id: req.params.id, $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]})
+                .populate('team', 'email')
+                .populate('admin', 'email')
                 .then((board) => {
                     if (board) {
                         return res.status(200).json({data: board})
@@ -65,7 +69,7 @@ module.exports = {
             if (isBoard) {
                 return res.status(400).json({message: "Such board name already in use"})
             }
-            const board = new Board({name, admin: user._id})
+            const board = new Board({name, admin: req.user._id})
             await board.save()
             return res.status(201).json({data: board._id})
         } catch (e) {
@@ -100,14 +104,19 @@ module.exports = {
             const board = await Board.findOne({admin: req.user._id, _id: req.params.id})
 
             if (!board) {
-                return res.status(404).json({error: "Board not found"})
+                return res.status(404).json({message: "You have no permissions to do it"})
             } else {
-                let usersIdArray
+                let usersIdArray=[]
                 if (usersId) {
                     usersIdArray = uniq(usersId.split(','))
                     for (let i = 0; i < usersIdArray.length; i++) {
                         if (req.user._id.equals(usersIdArray[i])) {
-                            return res.status(400).json({message: "You can not add yourself to board\\'s team"})
+                            return res.status(400).json({message: "You can not add yourself to board\'s team"})
+                        }
+                        try {
+                            await User.findById(usersIdArray[i])
+                        } catch (e) {
+                            return res.status(404).json({message: `User not found by ${usersIdArray[i]} id`})
                         }
                     }
                     usersIdArray = differenceWith(usersIdArray, board.team.map(value => value.toString()), isEqual)

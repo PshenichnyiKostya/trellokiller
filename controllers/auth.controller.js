@@ -55,7 +55,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data <br/>" + errors.array()[0].msg
+                    message: "Incorrect data" + errors.array()[0].msg
                 })
             }
             await passport.authenticate("local", function (err, user) {

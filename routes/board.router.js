@@ -4,7 +4,6 @@ const passport = require("passport");
 const boardController = require('../controllers/board.controller');
 const mongoose = require('mongoose')
 const boardRouter = Router()
-const User = require('../models/User')
 const Board = require('../models/Board')
 
 boardRouter.post('/',

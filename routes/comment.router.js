@@ -9,6 +9,7 @@ const Comment = require('../models/Comment')
 commentRouter.post('/',
     body('text')
         .exists().withMessage('Enter text')
+        .isLength({min:2,max:255}).withMessage('Text could be 2-255 symbols')
         .isString().withMessage('Incorrect text'),
     body('cardId')
         .exists().withMessage("Enter cardId value")

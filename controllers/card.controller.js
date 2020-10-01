@@ -46,8 +46,8 @@ module.exports = {
                     message: "Incorrect data" + errors.array()[0].msg
                 })
             }
-            const {name} = req.query
-            const {boardId} = req.body
+            const {name, boardId} = req.query
+            const searchRegex = new RegExp(name)
             const board = await Board.findOne({
                 _id: boardId,
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
@@ -57,7 +57,15 @@ module.exports = {
             } else {
                 const cards = await Card.find({
                     board: board._id,
-                    name: name ? name : {$exists: true},
+                    name: searchRegex,
+                }).populate({
+                    path: 'comments',
+                    select: 'text timestamp references user',
+                    populate: {
+                        path: 'references user',
+                        select: 'email',
+                    },
+
                 })
                 return res.status(200).json({data: cards})
             }
@@ -75,9 +83,9 @@ module.exports = {
                     message: "Incorrect data" + errors.array()[0].msg
                 })
             }
-
+            const {boardId} = req.query
             const board = await Board.findOne({
-                _id: req.body.boardId,
+                _id: boardId,
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
             })
             if (!board) {
@@ -141,7 +149,11 @@ module.exports = {
             if (!board) {
                 return res.status(400).json({message: "Board not found for deleting card"})
             } else {
-                Card.findOneAndUpdate({_id: req.params.id}, {name, status}).then((card) => {
+                const card = await Card.findOne({name})
+                if (card){
+                    return res.status(400).json({message: "This name already in use"})
+                }
+                await Card.findOneAndUpdate({_id: req.params.id}, {name, status}).then((card) => {
                     return res.status(200).json({data: card._id})
                 })
             }

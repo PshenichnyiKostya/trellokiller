@@ -34,4 +34,6 @@ User.methods.checkPassword = function (password) {
 //     Board.update({team: {"$in": [this._id]}}).exec();
 //     next();
 // });
+
+User.index({ email: 'text'});
 module.exports = model('User', User)
