@@ -11,6 +11,7 @@ import AddUsersToBoardComponent from "../components/AddUsersToBoardComponent";
 import CardsComponent from "../components/CardsComponent";
 import CreateCardComponent from "../components/CreateCardComponent";
 import UpdateBoardComponent from "../components/UpdateBoardComponent";
+import DeleteCardComponent from "../components/DeleteCardComponent";
 
 const useStyles = makeStyles((theme) => ({
     paper: {

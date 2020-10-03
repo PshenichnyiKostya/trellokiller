@@ -13,6 +13,7 @@ import {AuthContext} from "../context/AuthContext";
 import {Link} from 'react-router-dom'
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
+import DeleteBoardComponent from "../components/DeleteBoardComponent";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -71,7 +72,7 @@ export const BoardsPage = () => {
     const [name, setName] = useState('')
     const {loading, error, request, clearError} = useHttp()
     const [boards, setBoards] = useState([])
-    const {token} = useContext(AuthContext)
+    const {token, userId} = useContext(AuthContext)
 
     async function handleChangeFlag(event) {
         setMyBoardsFlag(event.target.checked)
@@ -98,7 +99,7 @@ export const BoardsPage = () => {
         func().then(data => {
             setBoards(data.data)
         })
-    }, [request, myBoardsFlag,name])
+    }, [request, myBoardsFlag, name])
 
     function handleName(e) {
         setName(e.target.value)
@@ -139,6 +140,7 @@ export const BoardsPage = () => {
                                 <Link to={`/board/${board._id}`}>See more</Link>
                             </Button>
                         </CardActions>
+                        <DeleteBoardComponent boardId={board._id}/>
                     </li>
                 )
             }

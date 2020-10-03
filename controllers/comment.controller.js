@@ -95,5 +95,27 @@ module.exports = {
         } catch (e) {
             next(e)
         }
+    },
+    updateComment: async (req, res, next) => {
+        try {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: "Incorrect data" + errors.array()[0].msg
+                })
+            }
+            const {text} = req.body
+            await Comment.findOneAndUpdate({_id: req.params.id, user: req.user._id}, {text}).then(comment=>{
+                if (!comment){
+                    return res.status(404).json({message: "You can not update this comment"})
+                }else {
+                    return res.status(200).json({data: req.params.id})
+                }
+            })
+        } catch (e) {
+            next(e)
+        }
+
     }
 }

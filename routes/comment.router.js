@@ -9,7 +9,7 @@ const Comment = require('../models/Comment')
 commentRouter.post('/',
     body('text')
         .exists().withMessage('Enter text')
-        .isLength({min:2,max:255}).withMessage('Text could be 2-255 symbols')
+        .isLength({min: 2, max: 255}).withMessage('Text could be 2-255 symbols')
         .isString().withMessage('Incorrect text'),
     body('cardId')
         .exists().withMessage("Enter cardId value")
@@ -28,5 +28,16 @@ commentRouter.delete('/:id',
         }).withMessage('Incorrect id param'),
 
     passport.authenticate('jwt'), commentController.deleteComment)
+
+commentRouter.patch('/:id',
+    param('id')
+        .custom(value => {
+            return Comment.findOne({_id: value}).exec()
+        }).withMessage('Incorrect id param'),
+    body('text')
+        .exists().withMessage('Enter text')
+        .isLength({min: 2, max: 255}).withMessage('Text could be 2-255 symbols')
+        .isString().withMessage('Incorrect text'),
+    passport.authenticate('jwt'), commentController.updateComment)
 
 module.exports = commentRouter

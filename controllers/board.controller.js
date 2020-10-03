@@ -78,9 +78,10 @@ module.exports = {
     },
     deleteBoard: async (req, res, next) => {
         try {
+            // TODO status fixe,delete cards and comments
             Board.deleteOne({_id: req.params.id, admin: req.user._id}).then((data) => {
                 if (data.deletedCount) {
-                    return res.status(204).json({data: req.params.id})
+                    return res.status(200).json({data: req.params.id})
                 } else {
                     return res.status(400).json({message: "You can not delete this board"})
                 }
@@ -106,7 +107,7 @@ module.exports = {
             if (!board) {
                 return res.status(404).json({message: "You have no permissions to do it"})
             } else {
-                let usersIdArray=[]
+                let usersIdArray = []
                 if (usersId) {
                     usersIdArray = uniq(usersId.split(','))
                     for (let i = 0; i < usersIdArray.length; i++) {

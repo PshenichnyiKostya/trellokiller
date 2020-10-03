@@ -12,13 +12,8 @@ export const useHttp = () => {
                 headers['Content-Type'] = 'Application/json'
             }
             const response = await fetch(url, {method, body, headers})
-            const data = await response.json()
-            // if (response.status === 401) {
-            //     throw new Error(
-            //         response.statusText
-            //     )
-            // }
-            if (!response.ok) {
+            const data = await response?.json()
+            if (!response?.ok) {
                 throw new Error(
                     data.message || "Something wrong("
                 )

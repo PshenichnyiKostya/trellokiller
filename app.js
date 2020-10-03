@@ -2,17 +2,17 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const path = require('path')
-const configurePassport = require("./middlewares/passport");
 const config = require('config')
 const mongoose = require('mongoose')
 const passport = require("passport")
+const cors = require("cors")
+const configurePassport = require("./middlewares/passport");
 const authRouter = require("./routes/auth.router")
 const boardRouter = require("./routes/board.router")
 const cardRouter = require("./routes/card.router")
 const commentRouter = require("./routes/comment.router")
-const userRouter = require("./routes/user.router")
 
-const cors = require("cors")
+const userRouter = require("./routes/user.router")
 
 configurePassport(passport)
 app.use(bodyParser.json({limit: '50mb'}))

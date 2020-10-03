@@ -19,8 +19,8 @@ module.exports = {
             const {email, password, password2} = req.body
             const myErrors = []
 
-            await User.findOne({email}).then(admin => {
-                if (admin) {
+            await User.findOne({email}).then(user => {
+                if (user) {
                     myErrors.push({message: 'Such email exist'})
                 }
             })

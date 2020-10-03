@@ -10,6 +10,8 @@ import Typography from "@material-ui/core/Typography";
 import CardContent from "@material-ui/core/CardContent";
 import LeaveCommentComponent from "./LeaveCommentComponent";
 import UpdateCardComponent from "./UpdateCardComponent";
+import DeleteCardComponent from "./DeleteCardComponent";
+import UpdateCommentComponent from "./UpdateCommentComponent";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,7 +80,7 @@ const CardsComponent = ({boardId}) => {
     const classes = useStyles();
     const [cards, setCards] = useState([])
     const {request, loading, error, clearError} = useHttp()
-    const {token} = useContext(AuthContext)
+    const {token, userId} = useContext(AuthContext)
     const [name, setName] = useState('')
 
 
@@ -201,6 +203,7 @@ const CardsComponent = ({boardId}) => {
                     {cards.map(card =>
                         <li key={card._id}>
                             <UpdateCardComponent cardId={card._id} boardId={boardId}/>
+                            <DeleteCardComponent style={{marginTop: '30px'}} boardId={boardId} cardId={card._id}/>
                             <CardContent className={classes.card}>
                                 <Typography variant='h5'>
                                     {card.name}
@@ -236,6 +239,8 @@ const CardsComponent = ({boardId}) => {
                                                 ) : undefined}
                                                 <br/>
                                                 <br/>
+                                                {comment.user._id === userId ?
+                                                    <UpdateCommentComponent commentId={comment._id}/> : undefined}
                                             </div>
                                         </li>
                                     </div>

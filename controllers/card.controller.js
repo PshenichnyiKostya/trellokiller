@@ -119,9 +119,10 @@ module.exports = {
             if (!board) {
                 return res.status(400).json({message: "Board not found for deleting card"})
             } else {
+                // TODO fix status, delete comments
                 Card.deleteOne({_id: req.params.id}).then((data) => {
                     if (data.deletedCount) {
-                        return res.status(204).json({data: req.params.id})
+                        return res.status(200).json({data: req.params.id})
                     } else {
                         return res.status(400).json({errors: "You can not delete this card"})
                     }
