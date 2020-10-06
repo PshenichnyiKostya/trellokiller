@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {body, param} = require('express-validator');
+const {body, param, query} = require('express-validator');
 const passport = require("passport");
 const cardController = require('../controllers/card.controller');
 const cardRouter = Router()
@@ -10,8 +10,7 @@ const Board = require('../models/Board')
 cardRouter.post('/',
     body('name')
         .exists({checkNull: true}).withMessage('Enter card name')
-        .isLength(5).withMessage('Min length is 5 symbols')
-    ,
+        .isLength(5).withMessage('Min length is 5 symbols'),
     body('boardId')
         .exists().withMessage("Enter borderId value")
         .custom(value => {
@@ -20,6 +19,11 @@ cardRouter.post('/',
     passport.authenticate('jwt'), cardController.createCard)
 
 cardRouter.get('/',
+    query('boardId')
+        .exists().withMessage("Enter boardId value")
+        .custom(value => {
+            return Board.findOne({_id: value}).exec()
+        }).withMessage('Incorrect boardId value'),
     passport.authenticate('jwt'), cardController.getCards)
 
 cardRouter.get('/:id',
@@ -27,6 +31,11 @@ cardRouter.get('/:id',
         .custom(value => {
             return Card.findOne({_id: value}).exec()
         }).withMessage('Incorrect id param'),
+    query('boardId')
+        .exists().withMessage("Enter boardId value")
+        .custom(value => {
+            return Board.findOne({_id: value}).exec()
+        }).withMessage('Incorrect boardId value'),
     passport.authenticate('jwt'), cardController.getCard)
 
 cardRouter.delete('/:id',

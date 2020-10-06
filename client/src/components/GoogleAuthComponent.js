@@ -6,7 +6,7 @@ import {useHistory} from "react-router-dom"
 
 export default function GoogleAuthComponent() {
 
-    const {loading, error, request, clearError} = useHttp()
+    const {request} = useHttp()
 
     const history = useHistory()
 
@@ -15,7 +15,6 @@ export default function GoogleAuthComponent() {
     const responseSuccessGoogle = async (response) => {
         const data = await request('/api/auth/googlelogin', 'POST', {tokenId: response.tokenId})
         auth.login(data.token, data.userInfo.id)
-        // auth?.isAuthenticated ? history.push('/') : history.push('/login')
         history.push('/')
     }
     const responseErrorGoogle = (response) => {

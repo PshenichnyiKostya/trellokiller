@@ -9,7 +9,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
 
@@ -43,7 +43,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
             const {name, boardId} = req.query
@@ -57,7 +57,7 @@ module.exports = {
             } else {
                 const cards = await Card.find({
                     board: board._id,
-                    name: searchRegex,
+                    name: { $regex: searchRegex, $options: "i" },
                 }).populate({
                     path: 'comments',
                     select: 'text timestamp references user',
@@ -80,7 +80,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
             const {boardId} = req.query
@@ -108,7 +108,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
 
@@ -119,7 +119,6 @@ module.exports = {
             if (!board) {
                 return res.status(400).json({message: "Board not found for deleting card"})
             } else {
-                // TODO fix status, delete comments
                 Card.deleteOne({_id: req.params.id}).then((data) => {
                     if (data.deletedCount) {
                         return res.status(200).json({data: req.params.id})
@@ -138,7 +137,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
 
@@ -151,7 +150,7 @@ module.exports = {
                 return res.status(400).json({message: "Board not found for deleting card"})
             } else {
                 const card = await Card.findOne({name})
-                if (card){
+                if (card) {
                     return res.status(400).json({message: "This name already in use"})
                 }
                 await Card.findOneAndUpdate({_id: req.params.id}, {name, status}).then((card) => {

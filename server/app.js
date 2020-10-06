@@ -1,11 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const path = require('path')
 const config = require('config')
 const mongoose = require('mongoose')
 const passport = require("passport")
-const cors = require("cors")
 const configurePassport = require("./middlewares/passport");
 const authRouter = require("./routes/auth.router")
 const boardRouter = require("./routes/board.router")
@@ -25,26 +23,17 @@ app.use((req, res, next) => {
     next()
 })
 
-if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'client', 'build')))
-
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-    })
-}
-
-app.use(cors());
+// app.get('/', (req, res) => res.send('HelloWorld'))
 app.use('/api/auth', authRouter)
 app.use('/api/board', boardRouter)
 app.use('/api/card', cardRouter)
 app.use('/api/comment', commentRouter)
 app.use('/api/user', userRouter)
 
+
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({err: "Unexpected server error " + err})
 });
-// мои борды, имена карт, имена бордов
-const PORT = config.get('port') || 5000
 
 async function start() {
     try {
@@ -54,8 +43,8 @@ async function start() {
             useFindAndModify: false,
             useCreateIndex: true,
         })
-        app.listen(PORT, () => {
-            console.log(`Server has been started on PORT ${PORT}...`)
+        app.listen(process.env.PORT || 5000, () => {
+            console.log(`Server has been started on PORT ${process.env.PORT || 5000}...`)
         })
     } catch (e) {
         console.log(`Server error ${e.message}!!!`)

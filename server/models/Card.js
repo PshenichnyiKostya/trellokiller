@@ -1,6 +1,6 @@
 const {Schema, model} = require('mongoose')
 const {CARD} = require('../consts')
-const Comment = require('../models/Comment')
+const Comment = require('./Comment')
 
 const Card = new Schema({
     name: {type: String, require: true},
@@ -15,7 +15,7 @@ const Card = new Schema({
 
 Card.pre('deleteOne',  function (next) {
     try {
-        require('../models/Board').updateOne({cards: {"$in": [this._conditions._id]}}, {
+        require('./Board').updateOne({cards: {"$in": [this._conditions._id]}}, {
             $pull: {cards: this._conditions._id}
         }).exec()
         Comment.deleteMany({card: this._conditions._id}).exec()

@@ -11,8 +11,8 @@ module.exports = {
             const searchRegex = new RegExp(name)
             const boards = await Board.find({
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}],
-                name: searchRegex
-            })
+                name: {$regex: searchRegex, $options: "i"}
+            }).select('-team').select('-cards')
             return res.status(200).json({data: boards})
         } catch (e) {
             next(e)
@@ -24,8 +24,8 @@ module.exports = {
             const searchRegex = new RegExp(name)
             const boards = await Board.find({
                 admin: req.user._id,
-                name: searchRegex
-            })
+                name: { $regex: searchRegex, $options: "i" }
+            }).select('-team').select('-cards')
             return res.status(200).json({data: boards})
         } catch (e) {
             next(e)
@@ -37,7 +37,7 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
             await Board.findOne({_id: req.params.id, $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]})
@@ -60,10 +60,9 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
-
             const {name} = req.body
             const isBoard = await Board.findOne({name, admin: req.user._id})
             if (isBoard) {
@@ -78,7 +77,6 @@ module.exports = {
     },
     deleteBoard: async (req, res, next) => {
         try {
-            // TODO status fixe,delete cards and comments
             Board.deleteOne({_id: req.params.id, admin: req.user._id}).then((data) => {
                 if (data.deletedCount) {
                     return res.status(200).json({data: req.params.id})
@@ -96,14 +94,17 @@ module.exports = {
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: "Incorrect data" + errors.array()[0].msg
+                    message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
 
             const {name, usersId} = req.body
 
+            const boardByName = await Board.findOne({admin: req.user._id, name})
+            if (boardByName) {
+                return res.status(404).json({message: "This name already in use"})
+            }
             const board = await Board.findOne({admin: req.user._id, _id: req.params.id})
-
             if (!board) {
                 return res.status(404).json({message: "You have no permissions to do it"})
             } else {

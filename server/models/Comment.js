@@ -10,7 +10,7 @@ const Comment = new Schema({
 
 Comment.pre('deleteOne',  function (next) {
     try {
-        require('../models/Card').updateOne({comments: {"$in": [this._conditions._id]}}, {
+        require('./Card').updateOne({comments: {"$in": [this._conditions._id]}}, {
             $pull: {comments: this._conditions._id}
         }).exec()
         next()

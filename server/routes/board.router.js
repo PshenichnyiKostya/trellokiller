@@ -2,7 +2,6 @@ const {Router} = require('express');
 const {body, param} = require('express-validator');
 const passport = require("passport");
 const boardController = require('../controllers/board.controller');
-const mongoose = require('mongoose')
 const boardRouter = Router()
 const Board = require('../models/Board')
 
@@ -12,9 +11,11 @@ boardRouter.post('/',
         .isLength(5).withMessage('Min length is 5 symbols'),
     passport.authenticate('jwt'), boardController.createBoard)
 
-boardRouter.get('/', passport.authenticate('jwt'), boardController.getBoards)
+boardRouter.get('/',
+    passport.authenticate('jwt'), boardController.getBoards)
 
-boardRouter.get('/my', passport.authenticate('jwt'), boardController.getMyBoards)
+boardRouter.get('/my',
+    passport.authenticate('jwt'), boardController.getMyBoards)
 
 boardRouter.get('/:id',
     param('id')
@@ -35,14 +36,13 @@ boardRouter.delete('/:id',
 boardRouter.patch('/:id',
     param('id')
         .custom(value => {
-            return mongoose.Types.ObjectId.isValid(value)
+            return Board.findOne({_id: value}).exec()
         }).withMessage('Incorrect id param'),
     body('usersId')
         .optional()
         .isString().withMessage('Incorrect usersId value'),
     body('name')
-        .isLength(5).withMessage('Min length is 5 symbols')
-    ,
+        .isLength(5).withMessage('Min length is 5 symbols'),
     passport.authenticate('jwt'), boardController.updateBoard
 )
 

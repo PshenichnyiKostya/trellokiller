@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {check} = require('express-validator');
+const {check, body} = require('express-validator');
 const authController = require('../controllers/auth.controller');
 
 const authRouter = Router()
@@ -18,10 +18,9 @@ authRouter.post('/login',
         check('password', 'Password must be at least 8 symbols').isLength({min: 8}),
     ], authController.login)
 
-// authRouter.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}))
-
-// authRouter.get('/google/login', passport.authenticate('google',{session:false}), authController.googleLogin)
-
-authRouter.post('/googlelogin', authController.googleLogin)
+authRouter.post('/googlelogin',
+    body('tokenId')
+        .exists().withMessage('Specify tokenId'),
+    authController.googleLogin)
 
 module.exports = authRouter
