@@ -35,7 +35,7 @@ module.exports = {
                         if (req.user._id.equals(referencesArray[i])) {
                             return res.status(400).json({message: "You can not reference to yourself"})
                         } else if (!board.admin.equals(referencesArray[i])
-                            && !board.team.find(teammate => teammate.equals(referencesArray[i]))) {
+                            && !board.team.find(teammate => teammate._id.equals(referencesArray[i]))) {
                             return res.status(400).json({message: "Incorrect references"})
                         }
                     }
@@ -84,10 +84,13 @@ module.exports = {
                     message: "Incorrect data: " + errors.array()[0].msg
                 })
             }
-
+            const comment = await Comment.findOne({_id: req.params.id, user: req.user._id})
+            if (!comment) {
+                return res.status(400).json({message: "You can not delete this comment"})
+            }
             await Comment.deleteOne({_id: req.params.id, user: req.user._id}).then((data) => {
                 if (data.deletedCount) {
-                    return res.status(204).json({data: req.params.id})
+                    return res.status(200).json({data: req.params.id})
                 } else {
                     return res.status(400).json({message: "You can not delete this comment"})
                 }

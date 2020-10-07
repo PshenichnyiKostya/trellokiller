@@ -27,7 +27,7 @@ export default function LeaveCommentComponent({cardId}) {
 
     async function leaveCommentHandle() {
         try {
-            const data = await request('/api/comment/', 'POST', {text, references, cardId}, {
+            await request('/api/comment/', 'POST', {text, references, cardId}, {
                 'Authorization':
                     `JWT ${token}`,
                 'Context-Type': 'Application/json'

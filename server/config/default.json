@@ -1,5 +1,4 @@
 {
-  "port": 5000,
   "secret": "fe93fb9144cf1530f404a2bffb4aae73",
   "mongoUrl": "mongodb+srv://leverx:1234@trelloserver.dfdxq.mongodb.net/trellodb?retryWrites=true&w=majority",
   "google_client_id": "174139438358-8o793qf1o4pq5mre3glgr7pee3cg6s1t.apps.googleusercontent.com",
@@ -11,6 +10,6 @@
     }
   },
   "email_config": {
-    "from": "TrelloKiller <ksphenichnyi@bk.ru"
+    "from": "TrelloKiller <ksphenichnyi@bk.ru>"
   }
 }

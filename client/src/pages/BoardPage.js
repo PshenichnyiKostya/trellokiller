@@ -11,7 +11,6 @@ import AddUsersToBoardComponent from "../components/AddUsersToBoardComponent";
 import CardsComponent from "../components/CardsComponent";
 import CreateCardComponent from "../components/CreateCardComponent";
 import UpdateBoardComponent from "../components/UpdateBoardComponent";
-import DeleteCardComponent from "../components/DeleteCardComponent";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -64,7 +63,7 @@ export const BoardPage = ({...props}) => {
                                     {board.name}
                                 </Typography>
                             </Toolbar>
-                            {userId === board.admin._id ?
+                            {userId === board.admin._id || true ?
                                 <div>
                                     <AddUsersToBoardComponent boardId={board._id} boardName={board.name}/>
                                     <div className={classes.paper}>

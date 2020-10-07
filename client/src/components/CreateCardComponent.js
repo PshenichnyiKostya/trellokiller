@@ -1,6 +1,5 @@
 import React, {useContext, useState} from "react";
 import TextField from "@material-ui/core/TextField";
-import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import {useHttp} from "../hooks/http.hook";
 import {AuthContext} from "../context/AuthContext";
@@ -16,7 +15,7 @@ export default function CreateCardComponent({boardId}) {
 
     async function createCardHandler() {
         try {
-            const data = await request('/api/card/', 'POST', {name, boardId}, {
+            await request('/api/card/', 'POST', {name, boardId}, {
                 'Authorization':
                     `JWT ${token}`,
                 'Context-Type': 'Application/json'

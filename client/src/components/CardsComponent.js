@@ -12,6 +12,7 @@ import LeaveCommentComponent from "./LeaveCommentComponent";
 import UpdateCardComponent from "./UpdateCardComponent";
 import DeleteCardComponent from "./DeleteCardComponent";
 import UpdateCommentComponent from "./UpdateCommentComponent";
+import DeleteCommentComponent from "./DeleteCommentComponent";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 const CardsComponent = ({boardId}) => {
     const classes = useStyles();
     const [cards, setCards] = useState([])
-    const {request, loading, error, clearError} = useHttp()
+    const {request, loading} = useHttp()
     const {token, userId} = useContext(AuthContext)
     const [name, setName] = useState('')
 
@@ -101,11 +102,7 @@ const CardsComponent = ({boardId}) => {
             setCards(r.data)
         })
 
-    }, [request, name])
-
-    function handleCloseError() {
-        clearError()
-    }
+    }, [request, name, boardId, token])
 
     function handleName(e) {
         setName(e.target.value)
@@ -239,8 +236,11 @@ const CardsComponent = ({boardId}) => {
                                                 ) : undefined}
                                                 <br/>
                                                 <br/>
-                                                {comment.user._id === userId ?
+                                                {comment.user._id === userId || true ?
                                                     <UpdateCommentComponent commentId={comment._id}/> : undefined}
+                                                <br/>
+                                                {comment.user._id === userId || true ?
+                                                    <DeleteCommentComponent commentId={comment._id}/> : undefined}
                                             </div>
                                         </li>
                                     </div>

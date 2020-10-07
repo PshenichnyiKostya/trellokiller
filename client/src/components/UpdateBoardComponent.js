@@ -7,7 +7,6 @@ import {useHttp} from "../hooks/http.hook";
 import {AuthContext} from "../context/AuthContext";
 
 
-
 export default function UpdateBoardComponent({boardId}) {
     const {request, loading, error, clearError} = useHttp()
     const [name, setName] = useState('')
@@ -23,7 +22,7 @@ export default function UpdateBoardComponent({boardId}) {
 
     async function updateBoardHandler() {
         try {
-            const data = await request(`/api/board/${boardId}`, 'PATCH', {name}, {
+            await request(`/api/board/${boardId}`, 'PATCH', {name}, {
                 'Authorization':
                     `JWT ${token}`,
                 'Context-Type': 'Application/json'

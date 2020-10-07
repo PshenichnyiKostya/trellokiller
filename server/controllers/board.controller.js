@@ -24,7 +24,7 @@ module.exports = {
             const searchRegex = new RegExp(name)
             const boards = await Board.find({
                 admin: req.user._id,
-                name: { $regex: searchRegex, $options: "i" }
+                name: {$regex: searchRegex, $options: "i"}
             }).select('-team').select('-cards')
             return res.status(200).json({data: boards})
         } catch (e) {
@@ -43,6 +43,7 @@ module.exports = {
             await Board.findOne({_id: req.params.id, $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]})
                 .populate('team', 'email')
                 .populate('admin', 'email')
+                .select('-cards')
                 .then((board) => {
                     if (board) {
                         return res.status(200).json({data: board})
@@ -77,6 +78,10 @@ module.exports = {
     },
     deleteBoard: async (req, res, next) => {
         try {
+            const board = await Board.findOne({_id: req.params.id, admin: req.user._id})
+            if (!board) {
+                return res.status(400).json({message: "You can not delete this board"})
+            }
             Board.deleteOne({_id: req.params.id, admin: req.user._id}).then((data) => {
                 if (data.deletedCount) {
                     return res.status(200).json({data: req.params.id})
@@ -101,10 +106,10 @@ module.exports = {
             const {name, usersId} = req.body
 
             const boardByName = await Board.findOne({admin: req.user._id, name})
-            if (boardByName) {
+            const board = await Board.findOne({admin: req.user._id, _id: req.params.id})
+            if (boardByName && !boardByName._id.equals(board._id)) {
                 return res.status(404).json({message: "This name already in use"})
             }
-            const board = await Board.findOne({admin: req.user._id, _id: req.params.id})
             if (!board) {
                 return res.status(404).json({message: "You have no permissions to do it"})
             } else {

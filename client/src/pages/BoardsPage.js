@@ -70,9 +70,9 @@ export const BoardsPage = () => {
     const classes = useStyles();
     const [myBoardsFlag, setMyBoardsFlag] = useState(false)
     const [name, setName] = useState('')
-    const {loading, error, request, clearError} = useHttp()
+    const {loading,  request, } = useHttp()
     const [boards, setBoards] = useState([])
-    const {token, userId} = useContext(AuthContext)
+    const {token,} = useContext(AuthContext)
 
     async function handleChangeFlag(event) {
         setMyBoardsFlag(event.target.checked)
@@ -99,7 +99,7 @@ export const BoardsPage = () => {
         func().then(data => {
             setBoards(data.data)
         })
-    }, [request, myBoardsFlag, name])
+    }, [request, myBoardsFlag, name,token])
 
     function handleName(e) {
         setName(e.target.value)

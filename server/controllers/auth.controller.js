@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 const config = require("config")
 const passport = require("passport")
 const {OAuth2Client} = require('google-auth-library')
+const crypto = require("crypto")
 
 module.exports = {
     registration: async (req, res, next) => {

@@ -57,7 +57,7 @@ module.exports = {
             } else {
                 const cards = await Card.find({
                     board: board._id,
-                    name: { $regex: searchRegex, $options: "i" },
+                    name: {$regex: searchRegex, $options: "i"},
                 }).populate({
                     path: 'comments',
                     select: 'text timestamp references user',
@@ -145,12 +145,12 @@ module.exports = {
             const board = await Board.findOne({
                 _id: boardId,
                 $or: [{admin: req.user._id}, {team: {"$in": [req.user._id]}}]
-            })
+            }).populate('cards', 'name')
+
             if (!board) {
                 return res.status(400).json({message: "Board not found for deleting card"})
             } else {
-                const card = await Card.findOne({name})
-                if (card) {
+                if (board.cards.find(card => card.name === name && !card._id.equals(req.params.id))) {
                     return res.status(400).json({message: "This name already in use"})
                 }
                 await Card.findOneAndUpdate({_id: req.params.id}, {name, status}).then((card) => {

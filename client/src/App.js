@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
     const {login, logout, token, userId} = useAuth()
     const isAuthenticated =!!token
+    console.log(token)
     const routes = useRoutes(isAuthenticated)
     const classes = useStyles();
     return (

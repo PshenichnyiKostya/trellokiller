@@ -23,7 +23,7 @@ app.use((req, res, next) => {
     next()
 })
 
-// app.get('/', (req, res) => res.send('HelloWorld'))
+app.get('/', (req, res) => res.send('HelloWorld'))
 app.use('/api/auth', authRouter)
 app.use('/api/board', boardRouter)
 app.use('/api/card', cardRouter)

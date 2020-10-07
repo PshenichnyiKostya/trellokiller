@@ -1,5 +1,4 @@
-import React, {useContext, useState} from "react";
-import TextField from "@material-ui/core/TextField";
+import React, {useContext} from "react";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
@@ -15,23 +14,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function UpdateCommentComponent({commentId}) {
+export default function DeleteCommentComponent({commentId}) {
     const {request, loading, error, clearError} = useHttp()
     const classes = useStyles()
-    const [text, setText] = useState('')
     const {token} = useContext(AuthContext)
 
-    function handleText(e) {
-        setText(e.target.value)
-    }
 
     function handleCloseError() {
         clearError()
     }
 
-    async function updateCommentHandler() {
+    async function deleteCommentHandler() {
         try {
-            await request(`/api/comment/${commentId}`, 'PATCH', {text}, {
+            await request(`/api/comment/${commentId}`, 'DELETE', undefined, {
                 'Authorization':
                     `JWT ${token}`,
                 'Context-Type': 'Application/json'
@@ -43,28 +38,16 @@ export default function UpdateCommentComponent({commentId}) {
 
     return (
         <div className={classes.paper}>
-            <TextField
-                id="filled-full-width"
-                label="Text"
-                name="text"
-                onChange={handleText}
-                margin="normal"
-                style={{width: '100px'}}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                variant="filled"
-            />
             <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 style={{width: '100px'}}
-                onClick={updateCommentHandler}
+                onClick={deleteCommentHandler}
                 disabled={loading}
             >
-                Update comment
+                Delete comment
             </Button>
             <Snackbar open={error} autoHideDuration={6000} onClose={handleCloseError}>
                 <Alert onClose={handleCloseError} severity="warning">

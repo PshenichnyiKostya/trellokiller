@@ -1,8 +1,4 @@
 import React, {useContext, useState} from "react";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -20,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function UpdateCardComponent({cardId,boardId}) {
+export default function UpdateCardComponent({cardId, boardId}) {
     const {request, loading, error, clearError} = useHttp()
     const classes = useStyles()
     const [name, setName] = useState('')
@@ -41,7 +37,7 @@ export default function UpdateCardComponent({cardId,boardId}) {
 
     async function updateCardHandler() {
         try {
-            const data = await request(`/api/card/${cardId}`, 'PATCH', {name,status,boardId}, {
+            await request(`/api/card/${cardId}`, 'PATCH', {name, status, boardId}, {
                 'Authorization':
                     `JWT ${token}`,
                 'Context-Type': 'Application/json'
